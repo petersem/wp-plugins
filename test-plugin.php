@@ -16,10 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Define core lookup values
-//$api_key  = '0ba35265604a6eeee7bd7c2f8615cdcc'; 
-
-
 // Setup the Admin Settings Page Menu
 add_action( 'admin_menu', 'ttf25_weather_ticker_menu' );
 function ttf25_weather_ticker_menu() {
