@@ -7,6 +7,8 @@
  * Author: Matt
  * Author URI: nesretep.net
  * Text Domain: test-plugin
+ * GitHub Plugin URI: https://github.com/petersem/wp-weather-plugin
+ * GitHub Branch: main
  */
 
 // Exit immediately if accessed directly to guarantee security
@@ -15,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define core lookup values
-$api_key  = '0ba35265604a6eeee7bd7c2f8615cdcc'; 
+//$api_key  = '0ba35265604a6eeee7bd7c2f8615cdcc'; 
 
 
 // Setup the Admin Settings Page Menu
@@ -244,8 +246,8 @@ function ttf25_automated_weather_ticker( $block_content, $block ) {
 		<style>
 			.custom-weather-ticker {
 				width: 100%;
-				background: #111111;
-				color: #ffffff;
+				background: #ffffff;
+				color: #111111;
 				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 				font-size: 14px;
 				font-weight: 500;
@@ -279,4 +281,5 @@ function ttf25_automated_weather_ticker( $block_content, $block ) {
 	return $block_content;
 }
 add_filter( 'render_block', 'ttf25_automated_weather_ticker', 10, 2 );
+
 
