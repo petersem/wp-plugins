@@ -11,271 +11,253 @@
  * GitHub Branch: main
  */
 
-// Exit immediately if accessed directly to guarantee security
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Setup the Admin Settings Page Menu
+/* ---------------------------------------------------------
+   ADMIN MENU
+--------------------------------------------------------- */
 add_action( 'admin_menu', 'ttf25_weather_ticker_menu' );
 function ttf25_weather_ticker_menu() {
-	add_options_page(
-		'Weather Ticker Settings',
-		'Weather Ticker',
-		'manage_options',
-		'ttf25-weather-ticker',
-		'ttf25_weather_ticker_settings_page'
-	);
+    add_options_page(
+        'Weather Ticker Settings',
+        'Weather Ticker',
+        'manage_options',
+        'ttf25-weather-ticker',
+        'ttf25_weather_ticker_settings_page'
+    );
 }
 
-
- // Register Plugin Settings Configuration
- add_action( 'admin_init', 'ttf25_weather_ticker_settings_init' );
+/* ---------------------------------------------------------
+   SETTINGS
+--------------------------------------------------------- */
+add_action( 'admin_init', 'ttf25_weather_ticker_settings_init' );
 function ttf25_weather_ticker_settings_init() {
-	register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_enabled' );
-	
-	// Register custom Latitude field with a cache clearing hook
-	register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_lat', array(
-		'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
-		'default'           => '-27.470125'
-	) );
 
-	// Register custom Lat/Long fields with a cache clearing hook
-	register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_lon', array(
-		'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
-		'default'           => '153.021072'
-	) );
+    register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_enabled' );
 
-    // Register custom api key with a cache clearing hook
-	register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_api_key', array(
-		'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
-		'default'           => '*************'
-	) );
+    register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_lat', array(
+        'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
+        'default'           => '-27.470125'
+    ) );
+
+    register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_lon', array(
+        'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
+        'default'           => '153.021072'
+    ) );
+
+    register_setting( 'ttf25_weather_ticker_group', 'ttf25_weather_ticker_api_key', array(
+        'sanitize_callback' => 'ttf25_sanitize_coordinate_change',
+        'default'           => '*************'
+    ) );
 }
 
-// Force clear the cache database automatically whenever custom latitude or longitude points are saved
 function ttf25_sanitize_coordinate_change( $new_value ) {
-	delete_transient( 'custom_live_ticker_text_v25' );
-	return sanitize_text_field( $new_value );
+    delete_transient( 'custom_live_ticker_text_v25' );
+    return sanitize_text_field( $new_value );
 }
 
-// Render the Admin Dashboard Settings UI & Diagnostics Layout
+/* ---------------------------------------------------------
+   ADMIN PAGE
+--------------------------------------------------------- */
 function ttf25_weather_ticker_settings_page() {
-    
-	if ( isset( $_POST['clear_weather_cache'] ) && check_admin_referer( 'clear_weather_nonce' ) ) {
-		delete_transient( 'custom_live_ticker_text_v25' );
-		echo '<div class="notice notice-success is-dismissible"><p>Weather transient cache successfully cleared!</p></div>';
-	}
 
-	$enabled     = get_option( 'ttf25_weather_ticker_enabled', '1' );
-	$saved_lat   = get_option( 'ttf25_weather_ticker_lat', '-27.470125' );
-	$saved_lon   = get_option( 'ttf25_weather_ticker_lon', '153.021072' );
+    if ( isset( $_POST['clear_weather_cache'] ) && check_admin_referer( 'clear_weather_nonce' ) ) {
+        delete_transient( 'custom_live_ticker_text_v25' );
+        echo '<div class="notice notice-success is-dismissible"><p>Weather transient cache successfully cleared!</p></div>';
+    }
+
+    $enabled     = get_option( 'ttf25_weather_ticker_enabled', '1' );
+    $saved_lat   = get_option( 'ttf25_weather_ticker_lat', '-27.470125' );
+    $saved_lon   = get_option( 'ttf25_weather_ticker_lon', '153.021072' );
     $saved_API_key = get_option( 'ttf25_weather_ticker_api_key', 'enter an OpenWeatherMap API key' );
-	$cached_text = get_transient( 'custom_live_ticker_text_v25' );
-	
-	?>
-	<div class="wrap">
-		<h1>🌤️ Weather Ticker Configuration Control</h1>
-		<form method="post" action="options.php">
-			<?php settings_fields( 'ttf25_weather_ticker_group' ); ?>
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row">Toggle Visibility</th>
-					<td>
-						<label>
-							<input type="checkbox" name="ttf25_weather_ticker_enabled" value="1" <?php checked( $enabled, '1' ); ?> />
-							Display the scrolling weather ticker under the theme header block asset templates.
-						</label>
-					</td>
-				</tr>
+    $cached_text = get_transient( 'custom_live_ticker_text_v25' );
+    ?>
+    <div class="wrap">
+        <h1>🌤️ Weather Ticker Configuration Control</h1>
 
-				<!-- API input field box -->
-				<tr valign="top">
-					<th scope="row"><label for="ttf25_weather_ticker_api_key">OpenWeatherMap API Key</label></th>
-					<td>
-						<input name="ttf25_weather_ticker_api_key" id="ttf25_weather_ticker_api_key" type="password" value="<?php echo esc_attr( $saved_API_key ); ?>" class="regular-text" placeholder="e.g. -27.470125" />
-						<p class="description">OpenWeatherMap API key</p>
-					</td>
-				</tr>
-                
-				<!-- Interactive Latitude input field box -->
-				<tr valign="top">
-					<th scope="row"><label for="ttf25_weather_ticker_lat">Target Latitude (lat)</label></th>
-					<td>
-						<input type="text" name="ttf25_weather_ticker_lat" id="ttf25_weather_ticker_lat" value="<?php echo esc_attr( $saved_lat ); ?>" class="regular-text" placeholder="e.g. -27.470125" />
-						<p class="description">Use negative values for positions in the Southern Hemisphere. </p>
-					</td>
-				</tr>
-
-				<!-- Interactive Longitude input field box -->
-				<tr valign="top">
-					<th scope="row"><label for="ttf25_weather_ticker_lon">Target Longitude (lon)</label></th>
-					<td>
-						<input type="text" name="ttf25_weather_ticker_lon" id="ttf25_weather_ticker_lon" value="<?php echo esc_attr( $saved_lon ); ?>" class="regular-text" placeholder="e.g. 153.021072" />
-						<p class="description">Changing either coordinate parameter automatically clears the data cache layer immediately.</p>
-					</td>
-				</tr>
-                <tr>
-                    (Lat -27.4698 and Lon 153.0251 for Brisbane)
+        <form method="post" action="options.php">
+            <?php settings_fields( 'ttf25_weather_ticker_group' ); ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">Toggle Visibility</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="ttf25_weather_ticker_enabled" value="1" <?php checked( $enabled, '1' ); ?> />
+                            Display the scrolling weather ticker under the theme header.
+                        </label>
+                    </td>
                 </tr>
-			</table>
-			<?php submit_button( 'Save Configuration Parameters' ); ?>
-		</form>
 
-		<hr style="margin: 30px 0; border: none; border-top: 1px solid #ccc;" />
+                <tr valign="top">
+                    <th scope="row"><label for="ttf25_weather_ticker_api_key">OpenWeatherMap API Key</label></th>
+                    <td>
+                        <input name="ttf25_weather_ticker_api_key" id="ttf25_weather_ticker_api_key" type="password" value="<?php echo esc_attr( $saved_API_key ); ?>" class="regular-text" />
+                    </td>
+                </tr>
 
-		<h2>⚙️ System Diagnostics & Cache Status</h2>
-		<table class="wp-list-table widefat fixed striped" style="max-width: 800px;">
-			<tbody>
-				<tr>
-					<td style="width: 200px;"><strong>Active Target Coordinates:</strong></td>
-					<td><code>Lat: <?php echo esc_html( $saved_lat ); ?> | Lon: <?php echo esc_html( $saved_lon ); ?></code></td>
-				</tr>
-				<tr>
-					<td><strong>Cache Engine Output Status:</strong></td>
-					<td>
-						<?php if ( $cached_text ) : ?>
-							<span style="color: #46b450; font-weight: bold;">🟢 Operational & Active</span> (Loaded from local data cache storage)
-						<?php else : ?>
-							<span style="color: #dc3232; font-weight: bold;">🔴 Expired / Empty</span> (Will trigger external API lookup on next page view)
-						<?php endif; ?>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Currently Cached String Layout:</strong></td>
-					<td><code><?php echo $cached_text ? esc_html( $cached_text ) : 'No active text payload currently cached in database'; ?></code></td>
-				</tr>
-				<tr>
-					<td><strong>System Query URL:</strong></td>
-                    <?php 
-                        $api_url = "https://api.openweathermap.org/data/2.5/forecast?lat={$saved_lat}&lon={$saved_lon}&units=metric&appid=************";
-                    ?>
-					<td><code style="word-break: break-all;"><?php echo esc_html( $api_url ); ?></code></td>
-				</tr>
-				</tr>
-			</tbody>
-		</table>
+                <tr valign="top">
+                    <th scope="row"><label for="ttf25_weather_ticker_lat">Target Latitude (lat)</label></th>
+                    <td>
+                        <input type="text" name="ttf25_weather_ticker_lat" id="ttf25_weather_ticker_lat" value="<?php echo esc_attr( $saved_lat ); ?>" class="regular-text" />
+                    </td>
+                </tr>
 
-		<form method="post" action="" style="margin-top: 15px;">
-			<?php wp_nonce_field( 'clear_weather_nonce', 'clear_weather_nonce' ); ?>
-			<input type="submit" name="clear_weather_cache" class="button button-secondary" value="Flush Active Weather Cache Memory Storage Layer" />
-		</form>
-	</div>
-	<?php
+                <tr valign="top">
+                    <th scope="row"><label for="ttf25_weather_ticker_lon">Target Longitude (lon)</label></th>
+                    <td>
+                        <input type="text" name="ttf25_weather_ticker_lon" id="ttf25_weather_ticker_lon" value="<?php echo esc_attr( $saved_lon ); ?>" class="regular-text" />
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button( 'Save Configuration Parameters' ); ?>
+        </form>
+
+        <hr />
+
+        <h2>⚙️ System Diagnostics & Cache Status</h2>
+
+        <table class="wp-list-table widefat fixed striped" style="max-width: 800px;">
+            <tbody>
+                <tr>
+                    <td><strong>Active Target Coordinates:</strong></td>
+                    <td><code>Lat: <?php echo esc_html( $saved_lat ); ?> | Lon: <?php echo esc_html( $saved_lon ); ?></code></td>
+                </tr>
+                <tr>
+                    <td><strong>Cache Engine Output Status:</strong></td>
+                    <td>
+                        <?php if ( $cached_text ) : ?>
+                            <span style="color: #46b450; font-weight: bold;">🟢 Operational & Active</span>
+                        <?php else : ?>
+                            <span style="color: #dc3232; font-weight: bold;">🔴 Expired / Empty</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form method="post" action="">
+            <?php wp_nonce_field( 'clear_weather_nonce', 'clear_weather_nonce' ); ?>
+            <input type="submit" name="clear_weather_cache" class="button button-secondary" value="Flush Active Weather Cache" />
+        </form>
+    </div>
+    <?php
 }
 
-// Weather Ticker Core Filter Logic (Hooks directly inside block layout templates)
-function ttf25_automated_weather_ticker( $block_content, $block ) {
+/* ---------------------------------------------------------
+   TICKER GENERATION (shared by both theme types)
+--------------------------------------------------------- */
+function ttf25_generate_ticker_html() {
 
-    
-	if ( '1' !== get_option( 'ttf25_weather_ticker_enabled', '1' ) ) {
-		return $block_content;
-	}
+    $ticker_text = get_transient( 'custom_live_ticker_text_v25' );
 
-	if ( ! empty( $block['attrs']['slug'] ) && 'header' === $block['attrs']['slug'] ) {
-		
-		$ticker_text = get_transient( 'custom_live_ticker_text_v25' );
-		
-		if ( false === $ticker_text ) {
-			$saved_lat = get_option( 'ttf25_weather_ticker_lat', '-27.470125' );
-			$saved_lon = get_option( 'ttf25_weather_ticker_lon', '153.021072' );
-            $saved_api_key = get_option( 'ttf25_weather_ticker_api_key', 'enter an OpenWeatherMap API key' );
+    if ( false === $ticker_text ) {
 
-            $api_url = "https://api.openweathermap.org/data/2.5/forecast?lat={$saved_lat}&lon={$saved_lon}&units=metric&appid=" . $saved_api_key;
-			$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
+        $saved_lat = get_option( 'ttf25_weather_ticker_lat', '-27.470125' );
+        $saved_lon = get_option( 'ttf25_weather_ticker_lon', '153.021072' );
+        $saved_api_key = get_option( 'ttf25_weather_ticker_api_key', '' );
 
-			if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
-				$data = json_decode( wp_remote_retrieve_body( $response ), true );
+        $api_url = "https://api.openweathermap.org/data/2.5/forecast?lat={$saved_lat}&lon={$saved_lon}&units=metric&appid={$saved_api_key}";
+        $response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
 
-				if ( ! empty( $data['list'] ) ) {
-					$current  = $data['list'][0];
-					$raw_temp = (float) $current['main']['temp'];
-					
-					// Force calculation backup transformations safely if raw Kelvin surfaces
-					if ( $raw_temp > 100 ) {
-						$raw_temp = $raw_temp - 273.15;
-					}
-					
-					$temp    = number_format( $raw_temp, 1 );
-					$desc    = ucfirst( $current['weather'][0]['description'] );
-					$humid   = $current['main']['humidity'];
-					
-					// Dynamic Location Label Header
-					$location_label = (!empty($data['city']['name'])) ? $data['city']['name'] : 'Selected Location';
-					$ticker_text = "📍 {$location_label} Now: {$temp}°C, {$desc} | 💧 Humidity: {$humid}% | ";
-					
-					$forecast_indices = array( 8, 16, 24, 32 );
-					
-					foreach ( $forecast_indices as $index ) {
-						if ( isset( $data['list'][$index] ) ) {
-							$forecast_item = $data['list'][$index];
-							$raw_f_temp    = (float) $forecast_item['main']['temp'];
-							
-							if ( $raw_f_temp > 100 ) {
-								$raw_f_temp = $raw_f_temp - 273.15;
-							}
-							
-							$f_temp   = number_format( $raw_f_temp, 1 );
-							$f_desc   = ucfirst( $forecast_item['weather'][0]['description'] );
-							$day_name = wp_date( 'D', $forecast_item['dt'] );
-							
-							$ticker_text .= "☀️ {$day_name}: {$f_temp}°C ({$f_desc}) | ";
-						}
-					}
-					
-					set_transient( 'custom_live_ticker_text_v25', $ticker_text, 3600 );
-				}
-			}
-		}
+        if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
 
-		if ( ! $ticker_text ) {
-			$ticker_text = "📍 Weather service unavailable | Please check settings | ";
-		}
+            $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		$ticker_html = '
-		<div class="custom-weather-ticker">
-			<div class="ticker-track">
-				' . esc_html( $ticker_text ) . '
-			</div>
-		</div>
-		
-		<style>
-			.custom-weather-ticker {
-				width: 100%;
-				background: #ffffff;
-				color: #111111;
-				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-				font-size: 14px;
-				font-weight: 500;
-				padding: 10px 0;
-				overflow: hidden;
-				white-space: nowrap;
-				box-sizing: border-box;
-				border-bottom: 2px solid #00D2FF;
-			}
-			
-			.ticker-track {
-				display: inline-block;
-				padding-left: 100%;
-				animation: brisbaneTickerEffect 35s linear infinite;
-			}
-			
-			@keyframes brisbaneTickerEffect {
-				0% { transform: translate3d(0, 0, 0); }
-				100% { transform: translate3d(-100%, 0, 0); }
-			}
-			
-			.ticker-track:hover {
-				animation-play-state: paused;
-				cursor: pointer;
-			}
-		</style>';
-		
-		return $block_content . $ticker_html;
-	}
+            if ( ! empty( $data['list'] ) ) {
 
-	return $block_content;
+                $current  = $data['list'][0];
+                $temp     = number_format( (float) $current['main']['temp'], 1 );
+                $desc     = ucfirst( $current['weather'][0]['description'] );
+                $humid    = $current['main']['humidity'];
+                $location = $data['city']['name'] ?? 'Selected Location';
+
+                $ticker_text = "📍 {$location} Now: {$temp}°C, {$desc} | 💧 Humidity: {$humid}% | ";
+
+                $forecast_indices = array( 8, 16, 24, 32 );
+
+                foreach ( $forecast_indices as $index ) {
+                    if ( isset( $data['list'][$index] ) ) {
+                        $item = $data['list'][$index];
+                        $f_temp = number_format( (float) $item['main']['temp'], 1 );
+                        $f_desc = ucfirst( $item['weather'][0]['description'] );
+                        $day    = wp_date( 'D', $item['dt'] );
+                        $ticker_text .= "☀️ {$day}: {$f_temp}°C ({$f_desc}) | ";
+                    }
+                }
+
+                set_transient( 'custom_live_ticker_text_v25', $ticker_text, 3600 );
+            }
+        }
+    }
+
+    if ( ! $ticker_text ) {
+        $ticker_text = "📍 Weather service unavailable | Please check settings | ";
+    }
+
+    return '
+    <div class="custom-weather-ticker">
+        <div class="ticker-track">' . esc_html( $ticker_text ) . '</div>
+    </div>
+
+    <style>
+        .custom-weather-ticker {
+            width: 100%;
+            background: #ffffff;
+            color: #111111;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            border-bottom: 2px solid #00D2FF;
+        }
+        .ticker-track {
+            display: inline-block;
+            padding-left: 100%;
+            animation: brisbaneTickerEffect 35s linear infinite;
+        }
+        @keyframes brisbaneTickerEffect {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+            cursor: pointer;
+        }
+    </style>';
 }
+
+/* ---------------------------------------------------------
+   BLOCK THEMES (Gutenberg)
+--------------------------------------------------------- */
 add_filter( 'render_block', 'ttf25_automated_weather_ticker', 10, 2 );
 
+function ttf25_automated_weather_ticker( $block_content, $block ) {
 
+    if ( '1' !== get_option( 'ttf25_weather_ticker_enabled', '1' ) ) {
+        return $block_content;
+    }
+
+    if ( ! empty( $block['attrs']['slug'] ) && 'header' === $block['attrs']['slug'] ) {
+        return $block_content . ttf25_generate_ticker_html();
+    }
+
+    return $block_content;
+}
+
+/* ---------------------------------------------------------
+   CLASSIC THEMES (Astra)
+--------------------------------------------------------- */
+add_action( 'get_header', 'ttf25_output_weather_ticker' );
+
+function ttf25_output_weather_ticker() {
+
+    if ( '1' !== get_option( 'ttf25_weather_ticker_enabled', '1' ) ) {
+        return;
+    }
+
+    echo ttf25_generate_ticker_html();
+}
