@@ -331,3 +331,56 @@ function myplugin_items_shortcode() {
 
 // Shortcode: display table + add form
 add_shortcode( 'myplugin_items', 'myplugin_items_shortcode' );
+
+
+// --------------------------------------------------------------------------
+// * 7 * Calling an API (Shortcode: dad_joke API)
+// --------------------------------------------------------------------------
+
+// the dad joke api and get a joke
+function dad_joke_shortcode() {
+
+    // If refresh button was pressed, redirect to clear POST
+    if ( isset($_POST['dad_joke_refresh']) ) {
+        wp_redirect( $_SERVER['REQUEST_URI'] );
+        exit;
+    }
+
+    // Fetch joke from API
+    $response = wp_remote_get(
+        'https://icanhazdadjoke.com/',
+        [
+            'headers' => [
+                'Accept' => 'application/json',
+                'User-Agent' => 'WordPress Dad Joke Plugin'
+            ]
+        ]
+    );
+
+    if ( is_wp_error( $response ) ) {
+        $joke = 'Could not fetch a joke right now.';
+    } else {
+        $body = wp_remote_retrieve_body( $response );
+        $data = json_decode( $body );
+        $joke = ! empty( $data->joke ) ? $data->joke : 'No joke found.';
+    }
+
+    ob_start();
+    ?>
+
+    <div class="dad-joke-box" style="padding:15px;border:1px solid #ccc;margin:10px 0;">
+        <p><strong>Dad Joke:</strong> <?php echo esc_html( $joke ); ?></p>
+
+        <form method="post">
+            <button type="submit" name="dad_joke_refresh">Get Another Joke</button>
+        </form>
+    </div>
+
+    <?php
+    return ob_get_clean();
+}
+
+// register the shortcode
+add_shortcode( 'dad_joke', 'dad_joke_shortcode' );
+
+

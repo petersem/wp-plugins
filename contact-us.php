@@ -370,6 +370,7 @@ function cf_contact_form_render()
                 });
 
                 if (!valid) e.preventDefault();
+                
             });
 
         });
@@ -462,7 +463,7 @@ function cf_feedback_process()
         'called'       => 0
     ]);
 
-    echo "<p>Thank you — your message has been saved.</p>";
+    echo "<h4 style='color: blue;'>Thank you — your message has been sent.</h4>";
 
     return ['errors' => [], 'values' => $values];
 }
@@ -513,7 +514,7 @@ function cf_feedback_admin_page()
     } else {
         $show_all = isset($_GET['show_all']) && $_GET['show_all'] == '1';
     }
-
+    $view_label = $show_all ? "Showing actioned and unactioned (all) records" : "Showing records requiring action";
     $button_label = $show_all ? "Show Feedback to action" : "Show All Records";
 
     // Persist the state
@@ -527,6 +528,8 @@ function cf_feedback_admin_page()
     echo '<input type="hidden" name="toggle" value="1">';
     echo '<button class="button">' . $button_label . '</button>';
     echo '</form>';
+    echo '<span>' . $view_label . '</span>';
+
     /* Pagination setup */
     $per_page = 7;
     $page_num = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
