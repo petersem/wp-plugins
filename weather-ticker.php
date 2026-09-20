@@ -56,9 +56,7 @@ function sanitize_coordinate_change( $new_value ) {
     return sanitize_text_field( $new_value );
 }
 
-/* ---------------------------------------------------------
-   ADMIN PAGE
---------------------------------------------------------- */
+// Admin page
 function weather_ticker_settings_page() {
 
     if ( isset( $_POST['clear_weather_cache'] ) && check_admin_referer( 'clear_weather_nonce' ) ) {
@@ -248,9 +246,7 @@ function automated_weather_ticker( $block_content, $block ) {
     return $block_content;
 }
 
-/* ---------------------------------------------------------
-   CLASSIC THEMES (Astra)
---------------------------------------------------------- */
+// Astra theme
 add_action( 'get_header', 'output_weather_ticker' );
 
 function output_weather_ticker() {
