@@ -6,6 +6,7 @@ Version: 7.0
 Author: Matt
 */
 
+// stop plugin from being executed outside of WP
 if (!defined('ABSPATH')) exit;
 
 /* ---------------------------------------------------------
