@@ -54,7 +54,7 @@ function generate_plugin_html() {
 }
 
 // Hook the function to the 'wp_body_open' action to display the content at the top of the page
-add_action( 'wp_body_open', 'generate_plugin_html' );
+add_action( 'wp_head', 'generate_plugin_html' );
 
 /* 
 some wordpress hooks you can use
@@ -138,3 +138,193 @@ function myplugin_page_html() {
 }
 
 add_action( 'admin_menu', 'myplugin_register_menu_page' );
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// Read and write from the wp_options table - via a top level menu page and shortcode
+//---------------------------------------------------------------------------------------------------------------
+
+// Register a setting stored in wp_options
+function myplugin_wpo_register_menu_page() {
+
+    add_menu_page(
+        'Saving to WP_Options table',        // Page title
+        'WP_Options Test',                 // Menu title
+        'manage_options',           // Capability
+        'mypluginxx-main',            // Menu slug
+        'myplugin_wpo_settings_page',   // Callback
+        'dashicons-admin-generic',  // Icon
+        25                          // Position
+    );
+}
+
+// Register a setting stored in wp_options
+add_action( 'admin_init', 'myplugin_wpo_register_settings' );
+
+function myplugin_wpo_register_settings() {
+    register_setting( 'myplugin_settings_group', 'myplugin_message' );
+}
+
+// Settings page HTML
+function myplugin_wpo_settings_page() {
+
+    // Read the saved option
+    $value = get_option( 'myplugin_message', '' );
+    ?>
+
+    <div class="wrap">
+        <h1>MyPlugin Settings</h1>
+
+        <form method="post" action="options.php">
+            <?php settings_fields( 'myplugin_settings_group' ); ?>
+
+            <table class="form-table">
+                <tr>
+                    <th scope="row">Message</th>
+                    <td>
+                        <input type="text"
+                               name="myplugin_message"
+                               value="<?php echo esc_attr( $value ); ?>"
+                               class="regular-text">
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button(); ?>
+        </form>
+    </div>
+
+    <?php
+}
+
+function myplugin_message_shortcode() {
+
+    $value = get_option( 'myplugin_message', '' );
+
+    if ( empty( $value ) ) {
+        return '<p>No message saved yet.</p>';
+    }
+
+    return '<p><strong>Saved Message:</strong> ' . esc_html( $value ) . '</p>';
+}
+
+//Add a top-level admin menu page
+add_action( 'admin_menu', 'myplugin_wpo_register_menu_page' );
+
+// Shortcode that outputs the saved option
+add_shortcode( 'myplugin_message', 'myplugin_message_shortcode' );
+
+
+
+
+// --------------------------------------------------------------------------
+// Create a custom table in the database and read/write to it
+// --------------------------------------------------------------------------
+
+// Create table on plugin activation
+register_activation_hook( __FILE__, 'myplugin_create_table' );
+
+function myplugin_create_table() {
+    global $wpdb;
+
+    // Use ONE consistent table name everywhere
+    $table_name = $wpdb->prefix . 'myplugin_items';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        title varchar(255) NOT NULL,
+        created datetime NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
+    // REQUIRED for dbDelta()
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+}
+
+// Insert a row
+function myplugin_insert_item( $title ) {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'myplugin_items';
+
+    $wpdb->insert(
+        $table_name,
+        [
+            'title'   => $title,
+            'created' => current_time( 'mysql' )
+        ]
+    );
+}
+
+// Read rows
+function myplugin_get_items() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'myplugin_items';
+
+    return $wpdb->get_results( "SELECT * FROM $table_name ORDER BY id DESC" );
+}
+
+// plugin to show db records and also add new ones
+function myplugin_items_shortcode() {
+
+    // Handle form submission
+    if ( isset($_POST['myplugin_new_title']) && ! empty($_POST['myplugin_new_title']) ) {
+
+        $title = sanitize_text_field( $_POST['myplugin_new_title'] );
+
+        myplugin_insert_item( $title );
+
+        wp_redirect( $_SERVER['REQUEST_URI'] );
+        exit;
+    }
+
+    // Fetch items
+    $items = myplugin_get_items();
+
+    ob_start();
+    ?>
+
+    <div class="myplugin-wrapper">
+
+        <h2>MyPlugin Items</h2>
+
+        <table border="1" cellpadding="6" cellspacing="0">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+            </tr>
+
+            <?php if ( $items ) : ?>
+                <?php foreach ( $items as $item ) : ?>
+                    <tr>
+                        <td><?php echo esc_html( $item->id ); ?></td>
+                        <td><?php echo esc_html( $item->title ); ?></td>
+                        <td><?php echo esc_html( $item->created ); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <tr><td colspan="3">No records yet.</td></tr>
+            <?php endif; ?>
+        </table>
+
+        <h3>Add New Item</h3>
+
+        <form method="post">
+            <input type="text" name="myplugin_new_title" placeholder="Enter title" required>
+            <button type="submit">Add</button>
+        </form>
+
+    </div>
+
+    <?php
+    return ob_get_clean();
+}
+
+// Shortcode: display table + add form
+add_shortcode( 'myplugin_items', 'myplugin_items_shortcode' );
