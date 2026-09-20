@@ -9,9 +9,7 @@ Author: Matt
 // stop plugin from being executed outside of WP
 if (!defined('ABSPATH')) exit;
 
-/* ---------------------------------------------------------
-   Activation: Create wp_feedback table
---------------------------------------------------------- */
+// Activation: Create wp_feedback table
 register_activation_hook(__FILE__, 'cf_feedback_install');
 
 function cf_feedback_install()
@@ -41,9 +39,7 @@ function cf_feedback_install()
     dbDelta($sql);
 }
 
-/* ---------------------------------------------------------
-   Shortcode: Contact Form
---------------------------------------------------------- */
+// Shortcode: Contact Form
 add_shortcode('contact_form', 'cf_contact_form_render');
 
 function cf_contact_form_render()
@@ -379,9 +375,8 @@ function cf_contact_form_render()
 <?php
     return ob_get_clean();
 }
-/* ---------------------------------------------------------
-   Process Form Submission → Save to DB
---------------------------------------------------------- */
+
+// Process Form Submission → Save to DB
 function cf_feedback_process()
 {
 
@@ -467,9 +462,8 @@ function cf_feedback_process()
 
     return ['errors' => [], 'values' => $values];
 }
-/* ---------------------------------------------------------
-   Admin Menu
---------------------------------------------------------- */
+
+// Admin Menu
 add_action('admin_menu', 'cf_feedback_admin_menu');
 
 function cf_feedback_admin_menu()
@@ -485,9 +479,7 @@ function cf_feedback_admin_menu()
     );
 }
 
-/* ---------------------------------------------------------
-   Admin Page — View + Delete + Called + Pagination
---------------------------------------------------------- */
+// Admin Page — View + Delete + Called + Pagination
 function cf_feedback_admin_page()
 {
     global $wpdb;
