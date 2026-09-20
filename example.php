@@ -1,18 +1,21 @@
 <?php 
 /**
- * Plugin Name: Example Plugins
+ * Plugin Name: 💀💀 Matt's Example Plugins 💀💀
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
- * Description: WordPress example plugins
+ * Description: WordPress example plugins. One file to rule them all. 😛😛😛
  * Version: 1.1
  * Author: Matt Petersen
  * Author URI: nesretep.net
  * Text Domain: example-plugin
  */
 
-//---------------------------------------------------------------------------------------------------------------
-// *** Place a plugin on the WP site
-//---------------------------------------------------------------------------------------------------------------
+// stop plugin from being executed outside of WP
+if (!defined('ABSPATH')) exit;
 
+
+//---------------------------------------------------------------------------------------------------------------
+// * 1 * Place a plugin on the WP site
+//---------------------------------------------------------------------------------------------------------------
 
 // This function generates the HTML content for the plugin
 function generate_plugin_html() {
@@ -66,7 +69,7 @@ some wordpress hooks you can use
 */
 
 //---------------------------------------------------------------------------------------------------------------
-// *** Place a plugin on any part of the WP site (shortcode)
+// * 2 * Place a plugin on any part of the WP site (shortcode)
 //---------------------------------------------------------------------------------------------------------------
 
 // Add a shortcode to display the plugin content - note that this does a return, not an echo, so it can be used in posts and pages
@@ -79,7 +82,7 @@ add_shortcode( 'my_shortcode', 'my_shortcode_callback' );
 
 
 //---------------------------------------------------------------------------------------------------------------
-// *** Create a settings page on the dashboard and settings menu
+// * 3 * Create a settings page on the dashboard - settings menu
 //---------------------------------------------------------------------------------------------------------------
 
 function myplugin_register_settings_page() {
@@ -113,7 +116,7 @@ function myplugin_settings_page() {
 add_action( 'admin_menu', 'myplugin_register_settings_page' );
 
 //---------------------------------------------------------------------------------------------------------------
-// *** Create a page on the top-level dashboard menu
+// * 4 * Create a page on the top-level dashboard menu
 //---------------------------------------------------------------------------------------------------------------
 function myplugin_register_menu_page() {
 
@@ -142,7 +145,7 @@ add_action( 'admin_menu', 'myplugin_register_menu_page' );
 
 
 //---------------------------------------------------------------------------------------------------------------
-// Read and write from the wp_options table - via a top level menu page and shortcode
+// * 5 * Read and write from the wp_options table - via a top level menu page and shortcode
 //---------------------------------------------------------------------------------------------------------------
 
 // Register a setting stored in wp_options
@@ -219,7 +222,7 @@ add_shortcode( 'myplugin_message', 'myplugin_message_shortcode' );
 
 
 // --------------------------------------------------------------------------
-// Create a custom table in the database and read/write to it
+// * 6 * Create a custom table in the database and read/write to it
 // --------------------------------------------------------------------------
 
 // Create table on plugin activation
