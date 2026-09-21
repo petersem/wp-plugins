@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Footer Sitemap with Toggle
  * Description: Sitemap with hide/show button inside Astra footer.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Plugin URI: nesretep.net
  * Author: Matt Petersen
  * Author URI: nesretep.net
