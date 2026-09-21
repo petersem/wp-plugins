@@ -61,6 +61,8 @@ jobs:
             cd build
             zip -r "${name}-${version}.zip" "$name"
             cd ..
+
+            echo "$name:$version" >> build/plugin_versions.txt
           done
 
       - name: Create release for each plugin
@@ -78,4 +80,3 @@ jobs:
               --title "$name - v$version" \
               --notes "Automated release for $name version $version"
           done < build/plugin_versions.txt
-
