@@ -78,8 +78,8 @@ jobs:
           while IFS=: read -r name version; do
             echo "Creating release for $name version $version"
 
-            tag="$name"   # tag = plugin name
-            title="$tag"  # title = tag
+            tag="${name}-${version}"
+            title="${name}-${version}"
 
             gh release create "$tag" "build/${name}-${version}.zip" \
               --title "$title" \
