@@ -3,10 +3,11 @@
  * Plugin Name: 💀💀 Matt's Example Plugins 💀💀
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
  * Description: WordPress example plugins. One file to rule them all. 😛😛😛
- * Version: 1.1
+ * Version: 1.2.1
  * Author: Matt Petersen
- * Author URI: nesretep.net
- * Text Domain: example-plugin
+ * Author URI: https://github.com/petersem
+ * GitHub Plugin URI: https://github.com/petersem/wp-plugins
+ * GitHub Branch: main
  */
 
 // stop plugin from being executed outside of WP
