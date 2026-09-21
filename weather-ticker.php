@@ -3,7 +3,7 @@
  * Plugin Name: weather ticker
  * Plugin URI: nesretep.net
  * Description: WordPress automated weather ticker plugin with Admin Custom Latitude & Longitude controls.
- * Version: 4.1
+ * Version: 6.6.6
  * Author: Matt
  * Author URI: nesretep.net
  * Text Domain: test-plugin
