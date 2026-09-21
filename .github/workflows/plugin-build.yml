@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Needed to compare commits
+          fetch-depth: 0
 
       - name: Determine changed plugins
         id: changes
