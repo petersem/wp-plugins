@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Contact Form
-Description: Custom contact form with full client-side + server-side validation, sticky values, and admin management.
-Version: 7.1
-Author: Matt
+* Plugin Name: Contact Form
+* Description: Custom contact form with full client-side + server-side validation, sticky values, and admin management.
+* Version: 7.1
+* Author: Matt
 */
 
 // stop plugin from being executed outside of WP
