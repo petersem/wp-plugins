@@ -52,6 +52,8 @@ jobs:
 
       - name: Upload ZIPs to GitHub Release
         uses: ncipollo/release-action@v1.21.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           artifacts: "build/*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
