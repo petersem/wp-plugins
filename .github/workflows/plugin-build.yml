@@ -18,6 +18,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check if any root-level PHP file changed
+        id: phpcheck
+        run: |
+          PREV=$(git rev-parse HEAD~1)
+          CHANGED=$(git diff --name-only $PREV HEAD)
+
+          echo "$CHANGED" | grep -E "^[^/]+\.php$" || exit 0
+
       - name: Determine changed plugins
         id: changes
         run: |
@@ -55,10 +63,10 @@ jobs:
           done
 
       - name: Create releases for each plugin
+        if: ${{ steps.changes.outputs.plugins != '' }}
         uses: ncipollo/release-action@v1.21.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: false
-          body: "Automated release for changed plugin(s)."
           artifacts: "build/*.zip"
+          name: "Plugin Release"
           tag: "${{ github.run_id }}"
