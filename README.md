@@ -1,12 +1,12 @@
 # Wordpress Plugins
 Just a sample project to learn how to do Wordpress plugins. 
 
-## Used for assessments
+## Examples
 - Sitemap in footer (sitemap.php)
 - Contact Us (contact-us.php)
 - Weather ticker and settings page (weather-ticker.php)
 
-## Examples
+
 **example.php**
 - Shortcode example
 - Direct placement example
