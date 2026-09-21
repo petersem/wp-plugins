@@ -1,4 +1,4 @@
-name: Build and Release changed plugins
+name: Build and Release Changed Plugins
 
 on:
   push:
@@ -24,10 +24,15 @@ jobs:
           PREV=$(git rev-parse HEAD~1)
           CHANGED=$(git diff --name-only $PREV HEAD)
 
-          echo "$CHANGED" | grep -E "^[^/]+\.php$" || exit 0
+          if echo "$CHANGED" | grep -qE "^[^/]+\.php$"; then
+            echo "php_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "php_changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Determine changed plugins
         id: changes
+        if: steps.phpcheck.outputs.php_changed == 'true'
         run: |
           PREV=$(git rev-parse HEAD~1)
           CHANGED=$(git diff --name-only $PREV HEAD)
@@ -43,14 +48,12 @@ jobs:
           echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
 
       - name: Process each changed plugin
-        if: ${{ steps.changes.outputs.plugins != '' }}
+        if: steps.changes.outputs.plugins != ''
         run: |
           mkdir -p build
 
           for name in ${{ steps.changes.outputs.plugins }}; do
             version=$(grep -m1 -E "^\s*\*\s*Version:\s*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" | sed -E 's/.*Version:\s*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-
-            echo "Processing $name version $version"
 
             mkdir -p "build/$name"
             cp "$name.php" "build/$name/$name.php"
@@ -58,15 +61,12 @@ jobs:
             cd build
             zip -r "${name}-${version}.zip" "$name"
             cd ..
-
-            echo "$name:$version" >> build/plugin_versions.txt
           done
 
       - name: Create releases for each plugin
-        if: ${{ steps.changes.outputs.plugins != '' }}
+        if: steps.changes.outputs.plugins != ''
         uses: ncipollo/release-action@v1.21.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "build/*.zip"
-          name: "Plugin Release"
           tag: "${{ github.run_id }}"
