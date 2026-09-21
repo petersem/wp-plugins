@@ -63,10 +63,13 @@ jobs:
             cd ..
           done
 
-      - name: Create releases for each plugin
+      - name: Create release for each plugin
         if: steps.changes.outputs.plugins != ''
-        uses: ncipollo/release-action@v1.21.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "build/*.zip"
-          tag: "${{ github.run_id }}"
+        run: |
+          while IFS=: read -r name version; do
+            echo "Creating release for $name version $version"
+
+            gh release create "$name" "build/${name}-${version}.zip" \
+              --title "$name - v$version" \
+              --notes "Automated release for $name version $version"
+          done < build/plugin_versions.txt
