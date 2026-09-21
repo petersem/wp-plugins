@@ -53,7 +53,14 @@ jobs:
           mkdir -p build
 
           for name in ${{ steps.changes.outputs.plugins }}; do
-            version=$(grep -m1 -E "^\s*\*\s*Version:\s*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" | sed -E 's/.*Version:\s*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+            # Bulletproof version extraction
+            version=$(grep -m1 -E "Version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" \
+              | sed -E 's/.*Version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+
+            if [ -z "$version" ]; then
+              echo "ERROR: No version found in $name.php — skipping."
+              continue
+            fi
 
             mkdir -p "build/$name"
             cp "$name.php" "build/$name/$name.php"
