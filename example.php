@@ -3,7 +3,7 @@
  * Plugin Name: 💀💀 Matt's Example Plugins 💀💀
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
  * Description: WordPress example plugins. One file to rule them all. 😛😛😛
- * Version: 1.2.14
+ * Version: 1.2.15
  * Author: Matt Petersen
  * Author URI: https://github.com/petersem
  * GitHub Plugin URI: https://github.com/petersem/wp-plugins
