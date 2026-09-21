@@ -1,14 +1,17 @@
 <?php
 /*
-Plugin Name: Footer Sitemap with Toggle
-Description: Sitemap with hide/show button inside Astra footer.
-Version: 1.0
-*/
+ * Plugin Name: Footer Sitemap with Toggle
+ * Description: Sitemap with hide/show button inside Astra footer.
+ * Version: 1.0
+ * Plugin URI: nesretep.net
+ * Author: Matt Petersen
+ * Author URI: nesretep.net
+ */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Button inside Astra footer
-add_action( 'astra_footer', 'footer_sitemap_button', 5 );
+add_action( 'astra_footer', 'footer_sitemap_button', 0 );
 
 function footer_sitemap_button() {
     ?>
