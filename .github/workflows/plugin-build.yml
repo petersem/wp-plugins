@@ -40,8 +40,7 @@ jobs:
         run: |
           mkdir -p build
           for name in ${{ steps.changes.outputs.plugins }}; do
-            mkdir -p "build/$name"
-            cp -r "plugins/$name/"* "build/$name/"
+            cp -R "plugins/$name" "build/$name"
           done
 
       - name: Zip changed plugins
@@ -49,6 +48,7 @@ jobs:
           for name in ${{ steps.changes.outputs.plugins }}; do
             zip -r "build/${name}.zip" "build/$name"
           done
+
 
       - name: Upload ZIPs to GitHub Release
         uses: ncipollo/release-action@v1.21.0
