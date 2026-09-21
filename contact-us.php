@@ -2,7 +2,7 @@
 /*
 * Plugin Name: Contact Form
 * Description: Custom contact form with full client-side + server-side validation, sticky values, and admin management.
-* Version: 1.2
+* Version: 1.3
 * Author: Matt
 */
 
