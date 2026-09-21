@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) exit;
 
 
 // * 1 * Place a plugin on the WP site
+//
 
 // This function generates the HTML content for the plugin
 function generate_plugin_html() {
@@ -67,9 +68,8 @@ some wordpress hooks you can use
  - 
 */
 
-//---------------------------------------------------------------------------------------------------------------
 // * 2 * Place a plugin on any part of the WP site (shortcode)
-//---------------------------------------------------------------------------------------------------------------
+//
 
 // Add a shortcode to display the plugin content - note that this does a return, not an echo, so it can be used in posts and pages
 function my_shortcode_callback() {
