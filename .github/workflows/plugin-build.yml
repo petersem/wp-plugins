@@ -67,6 +67,8 @@ jobs:
 
       - name: Create release for each plugin
         if: steps.changes.outputs.plugins != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ ! -f build/plugin_versions.txt ]; then
             echo "No plugins to release. Skipping."
@@ -80,3 +82,4 @@ jobs:
               --title "$name - v$version" \
               --notes "Automated release for $name version $version"
           done < build/plugin_versions.txt
+
