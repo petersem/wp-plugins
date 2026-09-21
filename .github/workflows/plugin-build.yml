@@ -1,4 +1,4 @@
-name: Build and Release Changed Plugins
+name: Build and Release changed plugins
 
 on:
   push:
