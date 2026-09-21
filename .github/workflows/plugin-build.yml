@@ -1,9 +1,9 @@
-name: Build Changed Plugins and Release
+name: Build and Release Changed Plugins
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -21,38 +21,44 @@ jobs:
       - name: Determine changed plugins
         id: changes
         run: |
-          PREV=$(git rev-list --tags --max-count=2 | tail -n1)
+          PREV=$(git rev-parse HEAD~1)
           CHANGED=$(git diff --name-only $PREV HEAD)
 
           PLUGINS=""
           for file in *.php; do
-            name="${file%.php}"   # strip .php extension
             if echo "$CHANGED" | grep -q "^$file$"; then
+              name="${file%.php}"
               PLUGINS="$PLUGINS $name"
             fi
           done
 
           echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
 
-      - name: Copy changed plugins into build folder
+      - name: Process each changed plugin
+        if: ${{ steps.changes.outputs.plugins != '' }}
         run: |
           mkdir -p build
+
           for name in ${{ steps.changes.outputs.plugins }}; do
+            version=$(grep -m1 -E "^\s*\*\s*Version:\s*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" | sed -E 's/.*Version:\s*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+
+            echo "Processing $name version $version"
+
             mkdir -p "build/$name"
             cp "$name.php" "build/$name/$name.php"
-          done
 
-      - name: Zip changed plugins
-        run: |
-          for name in ${{ steps.changes.outputs.plugins }}; do
             cd build
-            zip -r "${name}.zip" "$name"
+            zip -r "${name}-${version}.zip" "$name"
             cd ..
+
+            echo "$name:$version" >> build/plugin_versions.txt
           done
 
-      - name: Upload ZIPs to GitHub Release
+      - name: Create releases for each plugin
         uses: ncipollo/release-action@v1.21.0
         with:
-          artifacts: "build/*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: "${{ steps.changes.outputs.plugins }} - ${{ github.ref_name }}"
+          allowUpdates: false
+          body: "Automated release for changed plugin(s)."
+          artifacts: "build/*.zip"
+          tag: "${{ github.run_id }}"
