@@ -1,0 +1,54 @@
+name: Build Changed Plugins and Release
+
+on:
+  push:
+    tags:
+      - 'v*'   # Runs when you push a tag like v1.2.3
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Needed to compare commits
+
+      - name: Determine changed plugins
+        id: changes
+        run: |
+          PREV=$(git rev-list --tags --max-count=2 | tail -n1)
+          CHANGED=$(git diff --name-only $PREV HEAD)
+
+          PLUGINS=""
+          for plugin in plugins/*; do
+            if [ -d "$plugin" ]; then
+              name=$(basename "$plugin")
+              if echo "$CHANGED" | grep -q "^plugins/$name/"; then
+                PLUGINS="$PLUGINS $name"
+              fi
+            fi
+          done
+
+          echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
+
+      - name: Copy changed plugins into build folder
+        run: |
+          mkdir -p build
+          for name in ${{ steps.changes.outputs.plugins }}; do
+            mkdir -p "build/$name"
+            cp -r "plugins/$name/"* "build/$name/"
+          done
+
+      - name: Zip changed plugins
+        run: |
+          for name in ${{ steps.changes.outputs.plugins }}; do
+            zip -r "build/${name}.zip" "build/$name"
+          done
+
+      - name: Upload ZIPs to GitHub Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "build/*.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
