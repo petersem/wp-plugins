@@ -45,8 +45,12 @@ jobs:
             fi
           done
 
-          # newline-safe output
-          echo -e "plugins=${PLUGINS}" >> "$GITHUB_OUTPUT"
+          # SAFE MULTILINE OUTPUT (required)
+          {
+            echo "plugins<<EOF"
+            echo -e "$PLUGINS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Process each changed plugin
         if: steps.changes.outputs.plugins != ''
