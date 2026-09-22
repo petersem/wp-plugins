@@ -1,0 +1,20 @@
+<?php 
+/**
+ * Plugin Name: Test
+ * Plugin URI: https://github.com/petersem/wp-plugins
+ * Description: Just testing the water
+ * Version: 1.0.0
+ * Author: Matt Petersen
+ * Author URI: https://github.com/petersem
+ */
+
+// stop plugin from being executed outside of WP
+if (!defined('ABSPATH')) exit;
+
+// Add a shortcode to display the plugin content - note that this does a return, not an echo, so it can be used in posts and pages
+function my_shortcode_callback() {
+    return '<div style="background-color: #f0f0f0; padding: 10px;">Testing 1,2,3...</div>';
+}
+
+// Register the shortcode
+add_shortcode( 'test_sc', 'my_shortcode_callback' );   
