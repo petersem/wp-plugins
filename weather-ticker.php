@@ -6,7 +6,6 @@
  * Version: 1.0.0
  * Author: Matt
  * Author URI: nesretep.net
- * Text Domain: test-plugin
  * GitHub Plugin URI: https://github.com/petersem/wp-weather-plugin
  * GitHub Branch: main
  */

@@ -5,7 +5,9 @@
  * Version: 1.0.0
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
  * Author: Matt Petersen
- * Author URI: nesretep.net
+ * Author URI: https://github.com/petersem
+ * GitHub Plugin URI: https://github.com/petersem/wp-plugins
+ * GitHub Branch: main
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
