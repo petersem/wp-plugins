@@ -26,7 +26,8 @@ jobs:
       - name: Check if any root-level PHP file changed
         id: phpcheck
         run: |
-          CHANGED=$(git diff --name-only origin/main...HEAD)
+          BASE=$(git merge-base HEAD^ HEAD)
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
 
           if echo "$CHANGED" | grep -qE "^[^/]+\.php$"; then
             echo "php_changed=true" >> "$GITHUB_OUTPUT"
@@ -38,7 +39,8 @@ jobs:
         id: changes
         if: steps.phpcheck.outputs.php_changed == 'true'
         run: |
-          CHANGED=$(git diff --name-only origin/main...HEAD)
+          BASE=$(git merge-base HEAD^ HEAD)
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
 
           PLUGINS=""
           for file in *.php; do
@@ -92,8 +94,6 @@ jobs:
           fi
 
           while IFS=: read -r name version; do
-            echo "Creating release for $name version $version"
-
             tag="${name}-${version}"
             title="${name}-${version}"
 
