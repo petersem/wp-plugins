@@ -2,7 +2,7 @@
 /**
  * Plugin Name: 💀💀 Matt's Example Plugins 💀💀
  * Plugin URI: https://github.com/petersem/wp-plugins
- * Description: WordPress example plugins. One file to rule them all. 😛😛😛
+ * Description: WordPress example plugins (varrious). One file to rule them all. 😛😛😛
  * Version: 1.0.0
  * Author: Matt Petersen
  * Author URI: https://github.com/petersem
