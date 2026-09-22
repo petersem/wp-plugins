@@ -21,8 +21,7 @@ jobs:
       - name: Check if any root-level PHP file changed
         id: phpcheck
         run: |
-          PREV=$(git rev-parse HEAD~1)
-          CHANGED=$(git diff --name-only "$PREV" HEAD)
+          CHANGED=$(git diff --name-only origin/main...HEAD)
 
           if echo "$CHANGED" | grep -qE "^[^/]+\.php$"; then
             echo "php_changed=true" >> "$GITHUB_OUTPUT"
