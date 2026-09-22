@@ -33,8 +33,7 @@ jobs:
         id: changes
         if: steps.phpcheck.outputs.php_changed == 'true'
         run: |
-          PREV=$(git rev-parse HEAD~1)
-          CHANGED=$(git diff --name-only "$PREV" HEAD)
+          CHANGED=$(git diff --name-only origin/main...HEAD)
 
           PLUGINS=""
           for file in *.php; do
