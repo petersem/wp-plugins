@@ -17,5 +17,5 @@ Just a sample project to learn how to do Wordpress plugins.
 - Read/write with wp_options table
 - Read/write to custom table
 
-> Check out the github workflow, which packages changed plugins into zips, then puts them in the github release folder. :)
+> Check out the github workflow, which packages changed plugins into zips, then puts them in the github release folder.
 > 
