@@ -18,6 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch full history
+        run: |
+          git fetch --prune --unshallow || true
+          git fetch origin main
+
       - name: Check if any root-level PHP file changed
         id: phpcheck
         run: |
@@ -43,7 +48,6 @@ jobs:
             fi
           done
 
-          # SAFE MULTILINE OUTPUT (required)
           {
             echo "plugins<<EOF"
             echo -e "$PLUGINS"
@@ -55,11 +59,9 @@ jobs:
         run: |
           mkdir -p build
 
-          # Iterate safely over newline-separated plugin names
           echo "${{ steps.changes.outputs.plugins }}" | while read -r name; do
             [ -z "$name" ] && continue
 
-            # Extract version
             version=$(grep -m1 -E "Version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" \
               | sed -E 's/.*Version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
 
