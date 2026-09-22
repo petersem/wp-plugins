@@ -22,12 +22,12 @@ jobs:
         id: phpcheck
         run: |
           PREV=$(git rev-parse HEAD~1)
-          CHANGED=$(git diff --name-only $PREV HEAD)
+          CHANGED=$(git diff --name-only "$PREV" HEAD)
 
           if echo "$CHANGED" | grep -qE "^[^/]+\.php$"; then
-            echo "php_changed=true" >> $GITHUB_OUTPUT
+            echo "php_changed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "php_changed=false" >> $GITHUB_OUTPUT
+            echo "php_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Determine changed plugins
@@ -35,25 +35,29 @@ jobs:
         if: steps.phpcheck.outputs.php_changed == 'true'
         run: |
           PREV=$(git rev-parse HEAD~1)
-          CHANGED=$(git diff --name-only $PREV HEAD)
+          CHANGED=$(git diff --name-only "$PREV" HEAD)
 
           PLUGINS=""
           for file in *.php; do
             if echo "$CHANGED" | grep -q "^$file$"; then
               name="${file%.php}"
-              PLUGINS="$PLUGINS $name"
+              PLUGINS="${PLUGINS}${name}\n"
             fi
           done
 
-          echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
+          # newline-safe output
+          echo -e "plugins=${PLUGINS}" >> "$GITHUB_OUTPUT"
 
       - name: Process each changed plugin
         if: steps.changes.outputs.plugins != ''
         run: |
           mkdir -p build
 
-          for name in ${{ steps.changes.outputs.plugins }}; do
-            # Bulletproof version extraction
+          # Iterate safely over newline-separated plugin names
+          echo "${{ steps.changes.outputs.plugins }}" | while read -r name; do
+            [ -z "$name" ] && continue
+
+            # Extract version
             version=$(grep -m1 -E "Version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+" "$name.php" \
               | sed -E 's/.*Version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
 
@@ -65,9 +69,10 @@ jobs:
             mkdir -p "build/$name"
             cp "$name.php" "build/$name/$name.php"
 
-            cd build
-            zip -r "${name}-${version}.zip" "$name"
-            cd ..
+            (
+              cd build
+              zip -r "${name}-${version}.zip" "$name"
+            )
 
             echo "$name:$version" >> build/plugin_versions.txt
           done
@@ -91,4 +96,5 @@ jobs:
             gh release create "$tag" "build/${name}-${version}.zip" \
               --title "$title" \
               --notes "Automated release for $name version $version"
+
           done < build/plugin_versions.txt
