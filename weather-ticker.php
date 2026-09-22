@@ -3,7 +3,7 @@
  * Plugin Name: weather ticker
  * Plugin URI: nesretep.net
  * Description: WordPress automated weather ticker plugin with Admin Custom Latitude & Longitude controls.
- * Version: 1.0.2
+ * Version: 1.0.0
  * Author: Matt
  * Author URI: nesretep.net
  * Text Domain: test-plugin
@@ -13,9 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/* ---------------------------------------------------------
-   ADMIN MENU
---------------------------------------------------------- */
+// Admin menu
 add_action( 'admin_menu', 'weather_ticker_menu' );
 function weather_ticker_menu() {
     add_options_page(
@@ -27,9 +25,7 @@ function weather_ticker_menu() {
     );
 }
 
-/* ---------------------------------------------------------
-   SETTINGS
---------------------------------------------------------- */
+// Settings
 add_action( 'admin_init', 'weather_ticker_settings_init' );
 function weather_ticker_settings_init() {
 
@@ -142,9 +138,7 @@ function weather_ticker_settings_page() {
     <?php
 }
 
-/* ---------------------------------------------------------
-   TICKER GENERATION (shared by both theme types)
---------------------------------------------------------- */
+// Ticker generation
 function generate_ticker_html() {
 
     $ticker_text = get_transient( 'custom_live_ticker_text_v25' );
@@ -228,9 +222,7 @@ function generate_ticker_html() {
     </style>';
 }
 
-/* ---------------------------------------------------------
-   BLOCK THEMES (Gutenberg)
---------------------------------------------------------- */
+// Manage blobk themes
 add_filter( 'render_block', 'automated_weather_ticker', 10, 2 );
 
 function automated_weather_ticker( $block_content, $block ) {

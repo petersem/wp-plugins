@@ -3,7 +3,7 @@
  * Plugin Name: 💀💀 Matt's Example Plugins 💀💀
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
  * Description: WordPress example plugins. One file to rule them all. 😛😛😛
- * Version: 1.0.2
+ * Version: 1.0.0
  * Author: Matt Petersen
  * Author URI: https://github.com/petersem
  * GitHub Plugin URI: https://github.com/petersem/wp-plugins
@@ -80,9 +80,8 @@ function my_shortcode_callback() {
 add_shortcode( 'my_shortcode', 'my_shortcode_callback' );   
 
 
-//---------------------------------------------------------------------------------------------------------------
 // * 3 * Create a settings page on the dashboard - settings menu
-//---------------------------------------------------------------------------------------------------------------
+//
 
 function myplugin_register_settings_page() {
     add_options_page(
@@ -114,9 +113,8 @@ function myplugin_settings_page() {
 
 add_action( 'admin_menu', 'myplugin_register_settings_page' );
 
-//---------------------------------------------------------------------------------------------------------------
 // * 4 * Create a page on the top-level dashboard menu
-//---------------------------------------------------------------------------------------------------------------
+//
 function myplugin_register_menu_page() {
 
     add_menu_page(
@@ -143,9 +141,8 @@ add_action( 'admin_menu', 'myplugin_register_menu_page' );
 
 
 
-//---------------------------------------------------------------------------------------------------------------
 // * 5 * Read and write from the wp_options table - via a top level menu page and shortcode
-//---------------------------------------------------------------------------------------------------------------
+//
 
 // Register a setting stored in wp_options
 function myplugin_wpo_register_menu_page() {
@@ -220,9 +217,8 @@ add_shortcode( 'myplugin_message', 'myplugin_message_shortcode' );
 
 
 
-// --------------------------------------------------------------------------
 // * 6 * Create a custom table in the database and read/write to it
-// --------------------------------------------------------------------------
+// 
 
 // Create table on plugin activation
 register_activation_hook( __FILE__, 'myplugin_create_table' );
@@ -332,9 +328,8 @@ function myplugin_items_shortcode() {
 add_shortcode( 'myplugin_items', 'myplugin_items_shortcode' );
 
 
-// --------------------------------------------------------------------------
 // * 7 * Calling an API (Shortcode: dad_joke API)
-// --------------------------------------------------------------------------
+// 
 
 // the dad joke api and get a joke
 function dad_joke_shortcode() {
