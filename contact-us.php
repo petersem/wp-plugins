@@ -3,7 +3,7 @@
 * Plugin Name: Contact Form
 * Description: Custom contact form with full client-side + server-side validation, sticky values, and admin management.
 * Version: 1.0.0
-* Author: Matt P
+* Author: Matt Petersen
 * Author URI: https://github.com/petersem
 * GitHub Plugin URI: https://github.com/petersem/wp-plugins
 * GitHub Branch: main

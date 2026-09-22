@@ -4,7 +4,7 @@
  * Description: Sitemap with hide/show button inside Astra footer.
  * Version: 1.0.0
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
- * Author: Matt P
+ * Author: Matt Petersen
  * Author URI: https://github.com/petersem
  * GitHub Plugin URI: https://github.com/petersem/wp-plugins
  * GitHub Branch: main
