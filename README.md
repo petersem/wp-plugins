@@ -19,3 +19,12 @@ Just a sample project to learn how to do Wordpress plugins.
 
 > Check out the github workflow, which packages changed plugins into zips, then puts them in the github release folder. 
 > 
+
+## Docker dev container
+There is config here for docker dev container which installs php. This way you can actually execute the php locally.
+
+> via vscode command palette `ctrl+shift+p` type `dev container: Reopen in dev container`
+
+> If you want to run without the php xdebugger, use this:
+>
+> `php -d xdebug.mode=off yourfile.php`

@@ -1,0 +1,7 @@
+{
+  "name": "PHP Dev",
+  "image": "mcr.microsoft.com/devcontainers/php:8.2",
+  "postCreateCommand": "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && php -v && composer -V",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+}
