@@ -25,6 +25,6 @@ There is config here for docker dev container which installs php. This way you c
 
 > via vscode command palette `ctrl+shift+p` type `dev container: Reopen in dev container`
 
-> If you want to run without the php xdebugger, type this:
+> If you want to run without the php xdebugger, type this ok?:
 >
 > `php -d xdebug.mode=off yourfile.php`
