@@ -4,4 +4,17 @@
   "postCreateCommand": "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && php -v && composer -V",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/workspace",
+  "customizations": {
+       "vscode": {
+            "settings": {
+                "files.autoSaveDelay": 2000,
+                "files.autoSave": "afterDelay",                    
+                "workbench.colorTheme": "Abyss" //"Visual Studio Dark"
+            },
+            "extensions": [
+                 "WordPressPlayground.wordpress-playground"
+            ]
+       }
+  }
 }
+ 
