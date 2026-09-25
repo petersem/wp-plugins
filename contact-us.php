@@ -2,7 +2,7 @@
 /*
 * Plugin Name: Contact Form
 * Description: Contact form with full client-side + server-side validation, sticky values, and admin management.
-* Version: 1.0.0
+* Version: 1.0.1
 * Author: Matt Petersen
 * Author URI: https://github.com/petersem
 * GitHub Plugin URI: https://github.com/petersem/wp-plugins
@@ -472,8 +472,8 @@ add_action('admin_menu', 'cf_feedback_admin_menu');
 function cf_feedback_admin_menu()
 {
     add_menu_page(
-        'Feedback Processing',
-        'Feedback Processing',
+        'Contact Us',
+        'Contact Us',
         'manage_options',
         'cf-feedback',
         'cf_feedback_admin_page',
@@ -515,7 +515,7 @@ function cf_feedback_admin_page()
     // Persist the state
     $show_all_param = $show_all ? '&show_all=1' : '';
 
-    echo '<div class="wrap"><h1>Feedback Processing</h1>';
+    echo '<div class="wrap"><h1>Contact Us</h1>';
 
     echo '<form method="get" style="margin-bottom:10px;">';
     echo '<input type="hidden" name="page" value="cf-feedback">';
@@ -594,11 +594,11 @@ function cf_feedback_admin_page()
 
     echo '</tbody></table>';
 
-    /* Pagination links */
+    /* Pagination */
     $total_pages = ceil($total / $per_page);
 
     if ($total_pages > 1) {
-        echo '<div class="tablenav" style="width:100%; text-align:center;"><div class="tablenav-pages">';
+        echo '<div class=" style="width:100%; text-align:center;"><div class="pages">';
 
 
         for ($i = 1; $i <= $total_pages; $i++) {
@@ -616,18 +616,18 @@ function cf_feedback_admin_page()
     }
 
     echo '<style>
-    .tablenav-pages {
+    .pages {
         text-align: center !important;
         font-size: 20px !important;
         padding: 12px 0;
     }
-    .tablenav-pages .page-numbers {
+    .pages .page-numbers {
         margin: 0 8px;
         padding: 6px 14px;
         font-size: 20px;
         display: inline-block;
     }
-    .tablenav-pages .current {
+    .pages .current {
         background: #007cba;
         color: #fff;
         border-radius: 4px;

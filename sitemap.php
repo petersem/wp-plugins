@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Footer Sitemap with Toggle
  * Description: Sitemap with hide/show button inside Astra theme footer.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Plugin URI: https://www.youtube.com/watch?v=xvFZjo5PgG0
  * Author: Matt Petersen
  * Author URI: https://github.com/petersem
@@ -24,7 +24,7 @@ function footer_sitemap_button() {
                        background:#ccc;
                        color:#000;
                        border:1px solid #999;">
-            Show Sitemap
+            Sitemap
         </button>
     </div>
     <?php
@@ -112,7 +112,7 @@ function footer_sitemap_output() {
 
                     // Hide sitemap
                     box.style.display = 'none';
-                    btn.textContent = 'Show Sitemap';
+                    btn.textContent = 'Sitemap';
 
                     // Change button back to grey
                     btn.style.background = '#ccc';
