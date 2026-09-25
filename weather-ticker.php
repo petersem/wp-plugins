@@ -3,7 +3,7 @@
  * Plugin Name: weather ticker
  * Plugin URI: nesretep.net
  * Description: Weather ticker plugin with Admin Custom Latitude & Longitude controls.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Matt Petersen
  * Author URI: nesretep.net
  * GitHub Plugin URI: https://github.com/petersem/wp-weather-plugin
