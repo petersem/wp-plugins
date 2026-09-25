@@ -215,7 +215,7 @@ function cf_contact_form_render()
     <form id="cfContactForm" method="post" novalidate>
         <input type="hidden" name="cf_submit" value="1">
         <?php wp_nonce_field('cf_feedback_nonce', 'cf_nonce'); ?>
-        <!-- FIRST NAME -->
+        <!-- First naME -->
         <div class="cf-control">
             <?php cf_field_icon('person'); ?>
             <div style="flex:1;">
@@ -230,7 +230,7 @@ function cf_contact_form_render()
             <div class="error-msg"><?php echo $errors['first_name']; ?></div>
         <?php endif; ?>
 
-        <!-- LAST NAME -->
+        <!-- Last name -->
         <div class="cf-control">
             <?php cf_field_icon('family'); ?>
             <div style="flex:1;">
@@ -245,7 +245,7 @@ function cf_contact_form_render()
             <div class="error-msg"><?php echo $errors['last_name']; ?></div>
         <?php endif; ?>
 
-        <!-- EMAIL -->
+        <!-- Email -->
         <div class="cf-control">
             <?php cf_field_icon('email'); ?>
             <div style="flex:1;">
@@ -260,7 +260,7 @@ function cf_contact_form_render()
             <div class="error-msg"><?php echo $errors['email']; ?></div>
         <?php endif; ?>
 
-        <!-- CONTACT TYPE -->
+        <!-- Content type -->
         <div class="cf-control">
             <?php cf_field_icon('contact'); ?>
             <div style="flex:1;">
@@ -278,7 +278,7 @@ function cf_contact_form_render()
             <div class="error-msg"><?php echo $errors['contact_type']; ?></div>
         <?php endif; ?>
 
-        <!-- PHONE FIELDS -->
+        <!-- Phone -->
         <div id="phoneExtra" style="display:none;">
 
             <div class="cf-control">
@@ -330,7 +330,7 @@ function cf_contact_form_render()
             <?php endif; ?>
         </div>
 
-        <!-- SUBJECT -->
+        <!-- Subject -->
         <div class="cf-control">
             <?php cf_field_icon('subject'); ?>
             <div style="flex:1;">
@@ -345,7 +345,7 @@ function cf_contact_form_render()
             <div class="error-msg"><?php echo $errors['subject']; ?></div>
         <?php endif; ?>
 
-        <!-- NOTES -->
+        <!-- Notes -->
         <div class="cf-control">
             <?php cf_field_icon('notes'); ?>
             <div style="flex:1;">
