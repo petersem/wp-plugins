@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Subscription
  * Description: Collects email subscriptions for event and product news.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Plugin URI: https://github.com/petersem/wp-plugins
  * Author: Matt Petersen
  * Author URI: https://github.com/petersem

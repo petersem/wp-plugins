@@ -2,7 +2,7 @@
 /*
 * Plugin Name: Contact Us
 * Description: Contact Us form with admin management.
-* Version: 1.0.2
+* Version: 1.2.0
 * Author: Matt Petersen
 * Author URI: https://github.com/petersem
 * GitHub Plugin URI: https://github.com/petersem/wp-plugins
@@ -44,6 +44,35 @@ function cf_feedback_install()
 
 // Shortcode: Contact Form
 add_shortcode('contact_form', 'cf_contact_form_render');
+
+/*
+SVG Icon references
+Lucide Icons — clean, modern, consistent outline icons; excellent fit for this form.
+Heroicons — polished outline and solid icons.
+Material Symbols — large Google icon library.
+SVG Repo — broad collection with downloadable SVG files.
+Tabler Icons — lightweight, consistent outline icons.
+*/
+function cf_field_icon($icon)
+{
+    $paths = [
+        'person' => '<circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+        'family' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+        'email' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+        'contact' => '<path d="M4 6h16v12H4z"/><path d="M8 10h8M8 14h5"/>',
+        'phone' => '<path d="M6.5 3.5 9 3l2 5-2 1.5a13 13 0 0 0 3.5 3.5L14 11l5 2-.5 2.5C18 17.4 16.4 19 14.5 19 8.7 18.5 3.5 13.3 3 7.5 3 5.6 4.6 4 6.5 3.5Z"/>',
+        'calendar' => '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 9h18"/>',
+        'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'subject' => '<path d="M4 5h16v14H4z"/><path d="M7 9h10M7 13h7"/>',
+        'notes' => '<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+    ];
+
+    if (!isset($paths[$icon])) {
+        return;
+    }
+
+    echo '<span class="cf-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">' . $paths[$icon] . '</svg></span>';
+}
 
 function cf_contact_form_render()
 {
@@ -119,6 +148,32 @@ function cf_contact_form_render()
             box-sizing: border-box;
         }
 
+        #cfContactForm .cf-control {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        #cfContactForm .cf-field-icon {
+            display: grid;
+            flex: 0 0 18px;
+            width: 18px;
+            height: 18px;
+            color: #52606d;
+            place-items: center;
+            margin-top: 20px;
+        }
+
+        #cfContactForm .cf-field-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.8;
+        }
+
         #cfContactForm .invalid {
             border: 1px solid red !important;
         }
@@ -134,9 +189,22 @@ function cf_contact_form_render()
         }
 
         #cfContactForm button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             margin-top: 8px !important;
             padding: 6px 12px !important;
             font-size: 12px;
+        }
+
+        #cfContactForm button svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2;
         }
 
         #phoneExtra {
@@ -148,44 +216,64 @@ function cf_contact_form_render()
         <input type="hidden" name="cf_submit" value="1">
         <?php wp_nonce_field('cf_feedback_nonce', 'cf_nonce'); ?>
         <!-- FIRST NAME -->
-        <label class="required">First Name</label>
-        <input type="text" name="first_name"
-            value="<?php echo esc_attr($values['first_name']); ?>"
-            data-field="first_name"
-            class="<?php echo isset($errors['first_name']) ? 'invalid' : ''; ?>">
+        <div class="cf-control">
+            <?php cf_field_icon('person'); ?>
+            <div style="flex:1;">
+                <label class="required">First Name</label>
+                <input type="text" name="first_name"
+                    value="<?php echo esc_attr($values['first_name']); ?>"
+                    data-field="first_name"
+                    class="<?php echo isset($errors['first_name']) ? 'invalid' : ''; ?>">
+            </div>
+        </div>
         <?php if (isset($errors['first_name'])): ?>
             <div class="error-msg"><?php echo $errors['first_name']; ?></div>
         <?php endif; ?>
 
         <!-- LAST NAME -->
-        <label class="required">Last Name</label>
-        <input type="text" name="last_name"
-            value="<?php echo esc_attr($values['last_name']); ?>"
-            data-field="last_name"
-            class="<?php echo isset($errors['last_name']) ? 'invalid' : ''; ?>">
+        <div class="cf-control">
+            <?php cf_field_icon('family'); ?>
+            <div style="flex:1;">
+                <label class="required">Last Name</label>
+                <input type="text" name="last_name"
+                    value="<?php echo esc_attr($values['last_name']); ?>"
+                    data-field="last_name"
+                    class="<?php echo isset($errors['last_name']) ? 'invalid' : ''; ?>">
+            </div>
+        </div>
         <?php if (isset($errors['last_name'])): ?>
             <div class="error-msg"><?php echo $errors['last_name']; ?></div>
         <?php endif; ?>
 
         <!-- EMAIL -->
-        <label class="required">Email</label>
-        <input type="email" name="email"
-            value="<?php echo esc_attr($values['email']); ?>"
-            data-field="email"
-            class="<?php echo isset($errors['email']) ? 'invalid' : ''; ?>">
+        <div class="cf-control">
+            <?php cf_field_icon('email'); ?>
+            <div style="flex:1;">
+                <label class="required">Email</label>
+                <input type="email" name="email"
+                    value="<?php echo esc_attr($values['email']); ?>"
+                    data-field="email"
+                    class="<?php echo isset($errors['email']) ? 'invalid' : ''; ?>">
+            </div>
+        </div>
         <?php if (isset($errors['email'])): ?>
             <div class="error-msg"><?php echo $errors['email']; ?></div>
         <?php endif; ?>
 
         <!-- CONTACT TYPE -->
-        <label class="required">Contact Type</label>
-        <select name="contact_type" id="contact_type"
-            data-field="contact_type"
-            class="<?php echo isset($errors['contact_type']) ? 'invalid' : ''; ?>">
-            <option value="">Select…</option>
-            <option value="email" <?php selected($values['contact_type'], 'email'); ?>>Email</option>
-            <option value="phone" <?php selected($values['contact_type'], 'phone'); ?>>Phone</option>
-        </select>
+        <div class="cf-control">
+            <?php cf_field_icon('contact'); ?>
+            <div style="flex:1;">
+                <label class="required">Contact Type</label>
+                <select name="contact_type" id="contact_type"
+                    data-field="contact_type"
+                    class="<?php echo isset($errors['contact_type']) ? 'invalid' : ''; ?>">
+                    <option value="">Select…</option>
+                    <option value="email" <?php selected($values['contact_type'], 'email'); ?>>Email</option>
+                    <option value="phone" <?php selected($values['contact_type'], 'phone'); ?>>Phone</option>
+                </select>
+            </div>
+        </div>
         <?php if (isset($errors['contact_type'])): ?>
             <div class="error-msg"><?php echo $errors['contact_type']; ?></div>
         <?php endif; ?>
@@ -193,62 +281,93 @@ function cf_contact_form_render()
         <!-- PHONE FIELDS -->
         <div id="phoneExtra" style="display:none;">
 
-            <label class="phone-required required">Phone</label>
-            <input type="tel" name="phone" id="phone"
-                value="<?php echo esc_attr($values['phone']); ?>"
-                data-field="phone"
-                class="<?php echo isset($errors['phone']) ? 'invalid' : ''; ?>">
+            <div class="cf-control">
+                <?php cf_field_icon('phone'); ?>
+                <div style="flex:1;">
+                    <label class="phone-required required">Phone</label>
+                    <input type="tel" name="phone" id="phone"
+                        value="<?php echo esc_attr($values['phone']); ?>"
+                        data-field="phone"
+                        class="<?php echo isset($errors['phone']) ? 'invalid' : ''; ?>">
+                </div>
+            </div>
             <?php if (isset($errors['phone'])): ?>
                 <div class="error-msg"><?php echo $errors['phone']; ?></div>
             <?php endif; ?>
 
-            <label class="phone-required required">Best Day</label>
-            <input type="date" name="best_day"
-                min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>"
-                value="<?php echo esc_attr($values['best_day']); ?>"
-                data-field="best_day"
-                class="<?php echo isset($errors['best_day']) ? 'invalid' : ''; ?>"
-                required>
+            <div class="cf-control">
+                <?php cf_field_icon('calendar'); ?>
+                <div style="flex:1;">
+                    <label class="phone-required required">Best Day</label>
+                    <input type="date" name="best_day"
+                        min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>"
+                        value="<?php echo esc_attr($values['best_day']); ?>"
+                        data-field="best_day"
+                        class="<?php echo isset($errors['best_day']) ? 'invalid' : ''; ?>"
+                        required>
+                </div>
+            </div>
             <?php if (isset($errors['best_day'])): ?>
                 <div class="error-msg"><?php echo $errors['best_day']; ?></div>
             <?php endif; ?>
 
-            <label class="phone-required required">Best Time Range</label>
-            <select name="time_range" id="time_range"
-                data-field="time_range"
-                class="<?php echo isset($errors['time_range']) ? 'invalid' : ''; ?>">
-                <option value="">Select…</option>
-                <option value="morning" <?php selected($values['time_range'], 'morning'); ?>>Morning</option>
-                <option value="afternoon" <?php selected($values['time_range'], 'afternoon'); ?>>Afternoon</option>
-                <option value="evening" <?php selected($values['time_range'], 'evening'); ?>>Evening</option>
-            </select>
+            <div class="cf-control">
+                <?php cf_field_icon('clock'); ?>
+                <div style="flex:1;">
+                    <label class="phone-required required">Best Time Range</label>
+                    <select name="time_range" id="time_range"
+                        data-field="time_range"
+                        class="<?php echo isset($errors['time_range']) ? 'invalid' : ''; ?>">
+                        <option value="">Select…</option>
+                        <option value="morning" <?php selected($values['time_range'], 'morning'); ?>>Morning</option>
+                        <option value="afternoon" <?php selected($values['time_range'], 'afternoon'); ?>>Afternoon</option>
+                        <option value="evening" <?php selected($values['time_range'], 'evening'); ?>>Evening</option>
+                    </select>
+                </div>
+            </div>
             <?php if (isset($errors['time_range'])): ?>
                 <div class="error-msg"><?php echo $errors['time_range']; ?></div>
             <?php endif; ?>
         </div>
 
         <!-- SUBJECT -->
-        <label class="required">Subject</label>
-        <input type="text" name="subject"
-            value="<?php echo esc_attr($values['subject']); ?>"
-            data-field="subject"
-            class="<?php echo isset($errors['subject']) ? 'invalid' : ''; ?>">
+        <div class="cf-control">
+            <?php cf_field_icon('subject'); ?>
+            <div style="flex:1;">
+                <label class="required">Subject</label>
+                <input type="text" name="subject"
+                    value="<?php echo esc_attr($values['subject']); ?>"
+                    data-field="subject"
+                    class="<?php echo isset($errors['subject']) ? 'invalid' : ''; ?>">
+            </div>
+        </div>
         <?php if (isset($errors['subject'])): ?>
             <div class="error-msg"><?php echo $errors['subject']; ?></div>
         <?php endif; ?>
 
         <!-- NOTES -->
-        <label class="required">Notes</label>
-        <textarea name="notes"
-            data-field="notes"
-            class="<?php echo isset($errors['notes']) ? 'invalid' : ''; ?>"><?php
-                                                                            echo esc_textarea($values['notes']);
-                                                                            ?></textarea>
+        <div class="cf-control">
+            <?php cf_field_icon('notes'); ?>
+            <div style="flex:1;">
+                <label class="required">Notes</label>
+                <textarea name="notes"
+                    data-field="notes"
+                    class="<?php echo isset($errors['notes']) ? 'invalid' : ''; ?>"><?php
+                                                                                    echo esc_textarea($values['notes']);
+                                                                                    ?></textarea>
+            </div>
+        </div>
         <?php if (isset($errors['notes'])): ?>
             <div class="error-msg"><?php echo $errors['notes']; ?></div>
         <?php endif; ?>
 
-        <button type="submit">Send</button>
+        <button type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
+                <path d="M6 12h16"/>
+            </svg>
+            <span>Send</span>
+        </button>
 
     </form>
 
