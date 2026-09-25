@@ -1,8 +1,8 @@
 <?php
 /*
-* Plugin Name: Contact Form
-* Description: Contact form with full client-side + server-side validation, sticky values, and admin management.
-* Version: 1.0.1
+* Plugin Name: Contact Us
+* Description: Contact Us form with admin management.
+* Version: 1.0.2
 * Author: Matt Petersen
 * Author URI: https://github.com/petersem
 * GitHub Plugin URI: https://github.com/petersem/wp-plugins
